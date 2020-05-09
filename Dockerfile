@@ -6,6 +6,7 @@ RUN pip install poetry
 WORKDIR /srv/app
 COPY . .
 
+RUN poetry config settings.virtualenvs.create false
 RUN poetry install --no-dev --no-root
 
 EXPOSE $PORT
