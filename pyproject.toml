@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "russian-stocks-api"
+version = "0.1.0"
+description = ""
+authors = ["Vadim Ryazanov <vadimvoronezh@yandex.ru>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+flask-restplus = "^0.13.0"
+flask = "^1.1.2"
+Werkzeug = "0.16.1"
+wemake-python-styleguide = "^0.14.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.4.2"
+mypy = "^0.770"
+wemake-python-styleguide = "^0.14.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
