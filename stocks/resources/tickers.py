@@ -37,13 +37,15 @@ class TickersResource(flask_restplus.Resource):
     @ns.marshal_list_with(Ticker, envelope='results')
     def get(self):
         """Return list of available tickers."""
-        return list(flask.current_app.mongo.db.tickers.find())
+        db = flask.current_app.mongo.get_database()
+        return list(db.tickers.find())
 
     @ns.expect(Tickers, validate=True)
     def post(self):
         """Take a list of tickers from request and save to mongo."""
         items = flask.request.json['items']
-        flask.current_app.mongo.db.tickers.insert_many(items)
+        db = flask.current_app.mongo.get_database()
+        db.tickers.insert_many(items)
         return {'success': True}
 
 
@@ -54,11 +56,13 @@ class PaymentsResource(flask_restplus.Resource):
     @ns.marshal_list_with(Payment, envelope='results')
     def get(self):
         """Return list of available tickers."""
-        return list(flask.current_app.mongo.db.tickers.find())
+        db = flask.current_app.mongo.get_database()
+        return list(db.payments.find())
 
     @ns.expect(Payments, validate=True)
     def post(self):
         """Take a list of payments from request and save to mongo."""
         items = flask.request.json['items']
-        flask.current_app.mongo.db.payments.insert_many(items)
+        db = flask.current_app.mongo.get_database()
+        db.payments.insert_many(items)
         return {'success': True}
