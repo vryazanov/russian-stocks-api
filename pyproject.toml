@@ -10,6 +10,8 @@ flask-restplus = "^0.13.0"
 flask = "^1.1.2"
 Werkzeug = "0.16.1"
 wemake-python-styleguide = "^0.14.0"
+python-dotenv = "^0.13.0"
+waitress = "^1.4.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.4.2"
