@@ -18,7 +18,7 @@ def create_app() -> flask.Flask:
     app.api = init_api(app)
     app.mongo = init_mongo(app)
 
-    app.wsgi_app = werkzeug.middleware.proxy_fix.ProxyFix(app.wsgi_app)
+    app.wsgi_app = werkzeug.middleware.proxy_fix.ProxyFix(app.wsgi_app)  # type: ignore
     return app
 
 
