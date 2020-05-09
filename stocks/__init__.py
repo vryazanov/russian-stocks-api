@@ -5,6 +5,7 @@ import flask
 import flask_restplus
 import pymongo
 import pymongo.uri_parser
+import werkzeug.middleware.proxy_fix
 
 from stocks.resources import tickers
 
@@ -17,6 +18,7 @@ def create_app() -> flask.Flask:
     app.api = init_api(app)
     app.mongo = init_mongo(app)
 
+    app.wsgi_app = werkzeug.middleware.proxy_fix.ProxyFix(app.wsgi_app)
     return app
 
 
