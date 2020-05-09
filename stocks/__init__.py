@@ -1,21 +1,35 @@
 """Flask entrypoint."""
+import os
+
 import flask
 import flask_restplus
+import pymongo
+import pymongo.uri_parser
 
-import stocks.resources
+from stocks.resources import tickers
 
 
 def create_app() -> flask.Flask:
     """Create and return flask application."""
     app = flask.Flask(__name__)
+    app.config.from_object(os.environ['FLASK_CONFIG'])
 
-    init_api(app)
+    app.api = init_api(app)
+    app.mongo = init_mongo(app)
 
     return app
 
 
 def init_api(app: flask.Flask) -> flask_restplus.Api:
-    """Initialize api and setup routing."""
+    """Initialize api."""
     api = flask_restplus.Api()
-    api.add_resource(stocks.resources.TickersResource, '/tickers')
+
     api.init_app(app)
+    api.add_namespace(tickers.ns)
+
+    return api
+
+
+def init_mongo(app: flask.Flask) -> pymongo.MongoClient:
+    """Initialize mongo client."""
+    return pymongo.MongoClient(os.environ['MONGODB_URI'])
