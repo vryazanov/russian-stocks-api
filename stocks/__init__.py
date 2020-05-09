@@ -32,4 +32,4 @@ def init_api(app: flask.Flask) -> flask_restplus.Api:
 
 def init_mongo(app: flask.Flask) -> pymongo.MongoClient:
     """Initialize mongo client."""
-    return pymongo.MongoClient(os.environ['MONGODB_URI'])
+    return pymongo.MongoClient(app.config['MONGODB_URI'], retryWrites=False)
