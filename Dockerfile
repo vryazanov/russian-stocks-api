@@ -8,6 +8,4 @@ COPY . .
 
 RUN poetry install --no-dev --no-root
 
-EXPOSE 8080
-
-CMD ["poetry run waitress-serve --call 'stocks:create_app'"]
+CMD ["sh", "-c", "poetry run waitress-serve --port $PORT --call 'stocks:create_app'"]

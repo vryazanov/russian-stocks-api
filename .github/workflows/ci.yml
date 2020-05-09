@@ -1,4 +1,4 @@
-name: Quality checks
+name: CI
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -26,3 +26,19 @@ jobs:
     - name: Type checking with mypy
       run: |
         poetry run mypy .
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy to Heroku
+      uses: AkhileshNS/heroku-deploy@v3.0.4
+      with:
+        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+        heroku_email: ${{ secrets.HEROKU_EMAIL }}
+        heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+        branch: master
+        dontuseforce: true
+        usedocker: true
+        docker_heroku_process_type: web
+
