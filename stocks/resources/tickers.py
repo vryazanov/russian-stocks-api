@@ -9,7 +9,7 @@ ns = flask_restplus.Namespace(
 
 Ticker = ns.model('Ticker', {
     'name': flask_restplus.fields.String(required=True),
-    'name_verbose': flask_restplus.fields.String(required=True),
+    'ticker': flask_restplus.fields.String(required=True),
 })
 
 Tickers = ns.model('Tickers', {
