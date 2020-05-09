@@ -1,7 +1,6 @@
 """Flask entrypoint."""
 import os
 
-import dotenv
 import flask
 import flask_restplus
 import pymongo
