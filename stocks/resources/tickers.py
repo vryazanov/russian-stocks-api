@@ -19,7 +19,7 @@ Tickers = ns.model('Tickers', {
 
 Payment = ns.model('Payment', {
     'ticker': flask_restplus.fields.String(required=True),
-    'declaration_date': flask_restplus.fields.Date(required=True),
+    'declaration_date': flask_restplus.fields.String(required=True),
     'amount': flask_restplus.fields.Fixed(required=True),
     'is_forecast': flask_restplus.fields.Boolean(required=True),
 })
@@ -53,11 +53,16 @@ class TickersResource(flask_restplus.Resource):
 class PaymentsResource(flask_restplus.Resource):
     """Basic resource that returns data about dividend paymenrs."""
 
+    @ns.param('ticker')
     @ns.marshal_list_with(Payment, envelope='results')
     def get(self):
         """Return list of available tickers."""
-        db = flask.current_app.mongo.get_database()
-        return list(db.payments.find())
+        query, db = {}, flask.current_app.mongo.get_database()
+
+        if flask.request.args.get('ticker'):
+            query['ticker'] = {'$eq': flask.request.args['ticker']}
+
+        return list(db.payments.find(query))
 
     @ns.expect(Payments, validate=True)
     def post(self):
