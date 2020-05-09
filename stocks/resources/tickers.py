@@ -21,7 +21,7 @@ Payment = ns.model('Payment', {
     'ticker': flask_restplus.fields.String(required=True),
     'declaration_date': flask_restplus.fields.Date(required=True),
     'amount': flask_restplus.fields.Fixed(required=True),
-    'is_forecast': flask_restplus.fields.Boolean(required=True)
+    'is_forecast': flask_restplus.fields.Boolean(required=True),
 })
 
 Payments = ns.model('Payments', {
