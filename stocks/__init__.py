@@ -1,13 +1,17 @@
 """Flask entrypoint."""
 import os
 
+import dotenv
 import flask
 import flask_restplus
 import pymongo
 import pymongo.uri_parser
-import werkzeug.middleware.proxy_fix
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from stocks.resources import tickers
+
+
+dotenv.load_dotenv()
 
 
 def create_app() -> flask.Flask:
@@ -18,7 +22,7 @@ def create_app() -> flask.Flask:
     app.api = init_api(app)
     app.mongo = init_mongo(app)
 
-    app.wsgi_app = werkzeug.middleware.proxy_fix.ProxyFix(app.wsgi_app)  # type: ignore
+    app.wsgi_app = ProxyFix(app.wsgi_app)  # type: ignore
     return app
 
 
