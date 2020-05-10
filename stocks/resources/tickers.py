@@ -32,6 +32,18 @@ Payments = ns.model('Payments', {
         flask_restplus.fields.Nested(Payment), required=True),
 })
 
+Quote = ns.model('Quote', {
+    'ticker': flask_restplus.fields.String(required=True),
+    'date': flask_restplus.fields.String(required=True),
+    'open_price': flask_restplus.fields.Fixed(required=True),
+    'close_price': flask_restplus.fields.Fixed(required=True),
+})
+
+Quotes = ns.model('Payments', {
+    'items': flask_restplus.fields.List(
+        flask_restplus.fields.Nested(Quote), required=True),
+})
+
 
 @ns.route('/tickers')
 class TickersResource(flask_restplus.Resource):
@@ -49,6 +61,7 @@ class TickersResource(flask_restplus.Resource):
         """Take a list of tickers from request and save to mongo."""
         items = flask.request.json['items']
         db = flask.current_app.mongo.get_database()
+        db.tickers.drop()
         db.tickers.insert_many(items)
         return {'success': True}
 
@@ -85,5 +98,38 @@ class PaymentsResource(flask_restplus.Resource):
         """Take a list of payments from request and save to mongo."""
         items = flask.request.json['items']
         db = flask.current_app.mongo.get_database()
+        db.payments.drop()
         db.payments.insert_many(items)
+        return {'success': True}
+
+
+@ns.route('/quotes')
+class QuotesResource(flask_restplus.Resource):
+    """Basic resource that returns data about dividend paymenrs."""
+
+    @ns.param('ticker', 'to filter by ticker code')
+    @ns.param('date', 'to filter by date, for example 2020-01-15')
+    @ns.marshal_list_with(Quote, envelope='results')
+    def get(self):
+        """Return list of stock quotes."""
+        query, db = {}, flask.current_app.mongo.get_database()
+
+        if flask.request.args.get('ticker'):
+            ticker = flask.request.args['ticker']
+            query['ticker'] = {'$eq': ticker}
+
+        if flask.request.args.get('date'):
+            date = flask.request.args['date']
+            query['date'] = {'$eq': date}
+
+        return list(db.quotes.find(query))
+
+    @ns.hide
+    @ns.expect(Quotes, validate=True)
+    def post(self):
+        """Take a list of stock quotes from request and save to mongo."""
+        items = flask.request.json['items']
+        db = flask.current_app.mongo.get_database()
+        db.quotes.drop()
+        db.quotes.insert_many(items)
         return {'success': True}
