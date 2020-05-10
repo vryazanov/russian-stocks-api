@@ -83,8 +83,8 @@ class PaymentsResource(flask_restplus.Resource):
             query['ticker'] = {'$eq': ticker}
 
         if flask.request.args.get('source'):
-            ticker = flask.request.args['source']
-            query['source'] = {'$eq': ticker}
+            source = flask.request.args['source']
+            query['source'] = {'$eq': source}
 
         if flask.request.args.get('is_forecast'):
             is_forecast = flask.request.args['is_forecast']
