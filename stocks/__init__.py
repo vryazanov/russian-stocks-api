@@ -29,7 +29,13 @@ def create_app() -> flask.Flask:
 
 def init_api(app: flask.Flask) -> flask_restplus.Api:
     """Initialize api."""
-    api = flask_restplus.Api()
+    api = flask_restplus.Api(authorizations={
+        'Bearer Auth': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'X-Authorization',
+        },
+    })
 
     api.init_app(app)
 

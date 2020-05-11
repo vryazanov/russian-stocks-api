@@ -29,7 +29,7 @@ Payment = flask_restplus.Model('Payment', {
     'source': flask_restplus.fields.String(
         required=True,
         description='source from which payment was crawled.',
-        example='smartlab'
+        example='smartlab',
     ),
     'is_forecast': flask_restplus.fields.Boolean(
         required=True,
