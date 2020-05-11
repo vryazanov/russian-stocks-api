@@ -8,7 +8,8 @@ import pymongo
 import pymongo.uri_parser
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from stocks.resources import tickers
+from stocks import models
+from stocks.resources import imports, tickers
 
 
 dotenv.load_dotenv()
@@ -31,7 +32,13 @@ def init_api(app: flask.Flask) -> flask_restplus.Api:
     api = flask_restplus.Api()
 
     api.init_app(app)
+
     api.add_namespace(tickers.ns)
+    api.add_namespace(imports.ns)
+
+    api.add_model(models.Ticker.name, models.Ticker)
+    api.add_model(models.HistoricalQuote.name, models.HistoricalQuote)
+    api.add_model(models.Payment.name, models.Payment)
 
     return api
 
