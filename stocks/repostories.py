@@ -2,7 +2,7 @@
 import abc
 import typing
 
-import pymongo.databse
+import pymongo.database
 
 from stocks.filters.query import Query
 
@@ -34,7 +34,7 @@ class BaseRepository(metaclass=abc.ABCMeta):
 class TickerRepository(BaseRepository):
     """Base repository to work with tickers."""
 
-    def __init__(self, db: pymongo.databse.Database):
+    def __init__(self, db: pymongo.database.Database):
         """Primary constructor."""
         self._db = db
 
@@ -54,7 +54,7 @@ class TickerRepository(BaseRepository):
 class PaymentRepository(BaseRepository):
     """Base repository to work with payments."""
 
-    def __init__(self, db: pymongo.databse.Database):
+    def __init__(self, db: pymongo.database.Database):
         """Primary constructor."""
         self._db = db
 
@@ -74,7 +74,7 @@ class PaymentRepository(BaseRepository):
 class QuoteRepository(BaseRepository):
     """Base repository to work with historical quotes."""
 
-    def __init__(self, db: pymongo.databse.Database):
+    def __init__(self, db: pymongo.database.Database):
         """Primary constructor."""
         self._db = db
 
