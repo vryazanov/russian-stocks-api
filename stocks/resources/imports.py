@@ -1,7 +1,10 @@
 """A set of resources that are responsible for importing data from crawler."""
+import flask
 import flask_restplus
 
 import stocks.decorators
+import stocks.models
+import stocks.repostories
 
 
 ns = flask_restplus.Namespace(
@@ -14,8 +17,14 @@ class TickersResource(flask_restplus.Resource):
 
     method_decorators = (stocks.decorators.auth_required,)
 
+    @ns.expect([stocks.models.Ticker], validate=True)
     def post(self):
         """Do tickers importing."""
+        stocks.repostories.TickerRepository(
+            flask.current_app.mongo.get_database(),
+        ).recreate(
+            flask.request.json,
+        )
         return {'success': True}
 
 
@@ -27,6 +36,11 @@ class PaymentsResource(flask_restplus.Resource):
 
     def post(self):
         """Do dividend payment importing."""
+        stocks.repostories.PaymentRepository(
+            flask.current_app.mongo.get_database(),
+        ).recreate(
+            flask.request.json,
+        )
         return {'success': True}
 
 
@@ -38,4 +52,9 @@ class HistoricalQuotesResource(flask_restplus.Resource):
 
     def post(self):
         """Do historical quotes importing."""
+        stocks.repostories.QuoteRepository(
+            flask.current_app.mongo.get_database(),
+        ).recreate(
+            flask.request.json,
+        )
         return {'success': True}

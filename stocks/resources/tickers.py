@@ -5,6 +5,7 @@ import flask_restplus.fields
 
 import stocks.filtersets
 import stocks.models
+import stocks.repostories
 
 
 ns = flask_restplus.Namespace(
@@ -19,9 +20,13 @@ class TickersResource(flask_restplus.Resource):
     @ns.marshal_list_with(stocks.models.Ticker, envelope='results')
     def get(self):
         """Return list of available tickers."""
-        filter_set = stocks.filtersets.TickersFilterSet(flask.request.args)
-        db = flask.current_app.mongo.get_database()
-        return list(db.tickers.find(filter_set.query()))
+        return stocks.repostories.TickerRepository(
+            flask.current_app.mongo.get_database(),
+        ).search(
+            stocks.filtersets.TickersFilterSet(
+                flask.request.args,
+            ).query(),
+        )
 
 
 @ns.route('/<ticker>/payments', doc={'params': {
@@ -33,11 +38,13 @@ class PaymentsResource(flask_restplus.Resource):
     @ns.marshal_list_with(stocks.models.Payment, envelope='results')
     def get(self, ticker):
         """Return list of available tickers."""
-        filter_set = stocks.filtersets.PaymentsFilterSet(flask.request.args)
-        query = filter_set.query().equal_to(ticker=ticker)
-
-        db = flask.current_app.mongo.get_database()
-        return list(db.payments.find(query))
+        return stocks.repostories.PaymentRepository(
+            flask.current_app.mongo.get_database(),
+        ).search(
+            stocks.filtersets.PaymentsFilterSet(
+                flask.request.args,
+            ).query().equal_to(ticker=ticker),
+        )
 
 
 @ns.route('/<ticker>/quotes/historical', doc={'params': {
@@ -49,8 +56,10 @@ class HistoricalQuotesResource(flask_restplus.Resource):
     @ns.marshal_list_with(stocks.models.HistoricalQuote, envelope='results')
     def get(self, ticker):
         """Return list of historical stock quotes."""
-        filter_set = stocks.filtersets.QuoteFilterSet(flask.request.args)
-        query = filter_set.query().equal_to(ticker=ticker)
-
-        db = flask.current_app.mongo.get_database()
-        return list(db.quotes.find(query))
+        return stocks.repostories.QuoteRepository(
+            flask.current_app.mongo.get_database(),
+        ).search(
+            stocks.filtersets.QuoteFilterSet(
+                flask.request.args,
+            ).query().equal_to(ticker=ticker),
+        )
