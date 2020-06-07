@@ -8,7 +8,7 @@ import stocks.repostories
 
 
 ns = flask_restx.Namespace(
-    'imports', description='Import financial data from crawler.')
+    'crawler', description='Import financial data from crawler.')
 
 
 @ns.route('/tickers', doc={'security': 'Bearer Auth'})
@@ -17,6 +17,7 @@ class TickersResource(flask_restx.Resource):
 
     method_decorators = (stocks.decorators.auth_required,)
 
+    @ns.doc(id='import_tickers')
     @ns.expect([stocks.models.Ticker], validate=True)
     def post(self):
         """Do tickers importing."""
@@ -34,6 +35,8 @@ class PaymentsResource(flask_restx.Resource):
 
     method_decorators = (stocks.decorators.auth_required,)
 
+    @ns.doc(id='import_payments')
+    @ns.expect([stocks.models.Payment], validate=True)
     def post(self):
         """Do dividend payment importing."""
         stocks.repostories.PaymentRepository(
@@ -50,6 +53,8 @@ class HistoricalQuotesResource(flask_restx.Resource):
 
     method_decorators = (stocks.decorators.auth_required,)
 
+    @ns.doc(id='import_quotes')
+    @ns.expect([stocks.models.HistoricalQuote], validate=True)
     def post(self):
         """Do historical quotes importing."""
         stocks.repostories.QuoteRepository(
