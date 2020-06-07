@@ -1,18 +1,18 @@
 """A set of resources that are responsible for importing data from crawler."""
 import flask
-import flask_restplus
+import flask_restx
 
 import stocks.decorators
 import stocks.models
 import stocks.repostories
 
 
-ns = flask_restplus.Namespace(
+ns = flask_restx.Namespace(
     'imports', description='Import financial data from crawler.')
 
 
 @ns.route('/tickers', doc={'security': 'Bearer Auth'})
-class TickersResource(flask_restplus.Resource):
+class TickersResource(flask_restx.Resource):
     """Resource to import tickers."""
 
     method_decorators = (stocks.decorators.auth_required,)
@@ -29,7 +29,7 @@ class TickersResource(flask_restplus.Resource):
 
 
 @ns.route('/payments', doc={'security': 'Bearer Auth'})
-class PaymentsResource(flask_restplus.Resource):
+class PaymentsResource(flask_restx.Resource):
     """Resource to import payments."""
 
     method_decorators = (stocks.decorators.auth_required,)
@@ -44,8 +44,8 @@ class PaymentsResource(flask_restplus.Resource):
         return {'success': True}
 
 
-@ns.route('/quotes/historical', doc={'security': [{'Bearer Auth': 'test'}]})
-class HistoricalQuotesResource(flask_restplus.Resource):
+@ns.route('/quotes/historical', doc={'security': 'Bearer Auth'})
+class HistoricalQuotesResource(flask_restx.Resource):
     """Resource to import historical quotes."""
 
     method_decorators = (stocks.decorators.auth_required,)

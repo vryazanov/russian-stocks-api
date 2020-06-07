@@ -3,7 +3,7 @@ import os
 
 import dotenv
 import flask
-import flask_restplus
+import flask_restx
 import pymongo
 import pymongo.uri_parser
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -27,9 +27,9 @@ def create_app() -> flask.Flask:
     return app
 
 
-def init_api(app: flask.Flask) -> flask_restplus.Api:
+def init_api(app: flask.Flask) -> flask_restx.Api:
     """Initialize api."""
-    api = flask_restplus.Api(authorizations={
+    api = flask_restx.Api(authorizations={
         'Bearer Auth': {
             'type': 'apiKey',
             'in': 'header',

@@ -2,7 +2,8 @@
 import abc
 import typing
 
-import flask_restplus.fields
+import flask_restx.fields
+import flask_restx.utils
 
 
 class BaseField(metaclass=abc.ABCMeta):
@@ -22,9 +23,9 @@ class BaseField(metaclass=abc.ABCMeta):
 
 
 class BaseModelField(BaseField):
-    """Add functionality to work with `flask_restplus.Model`."""
+    """Add functionality to work with `flask_restx.Model`."""
 
-    def __init__(self, field: flask_restplus.fields.Raw):
+    def __init__(self, field: flask_restx.fields.Raw):
         """Primary constructor.
 
         Take only model's field for swagger docs.
@@ -33,7 +34,7 @@ class BaseModelField(BaseField):
 
     def schema(self) -> typing.Dict[str, str]:
         """Return description for swagger docs."""
-        return self.field.schema()
+        return flask_restx.utils.not_none(self.field.schema())
 
 
 class EqualField(BaseModelField):
