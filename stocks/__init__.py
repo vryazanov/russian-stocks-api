@@ -9,6 +9,7 @@ import pymongo.uri_parser
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from stocks import models
+from stocks.objects.payment import PaymentModel
 from stocks.resources import imports, tickers
 
 
@@ -44,7 +45,7 @@ def init_api(app: flask.Flask) -> flask_restx.Api:
 
     api.add_model(models.Ticker.name, models.Ticker)
     api.add_model(models.HistoricalQuote.name, models.HistoricalQuote)
-    api.add_model(models.Payment.name, models.Payment)
+    api.add_model(PaymentModel.name, PaymentModel)
 
     return api
 

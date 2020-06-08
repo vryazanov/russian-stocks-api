@@ -5,6 +5,7 @@ import flask_restx
 import stocks.decorators
 import stocks.models
 import stocks.repostories
+from stocks.objects.payment import PaymentModel
 
 
 ns = flask_restx.Namespace(
@@ -36,7 +37,7 @@ class PaymentsResource(flask_restx.Resource):
     method_decorators = (stocks.decorators.auth_required,)
 
     @ns.doc(id='import_payments')
-    @ns.expect([stocks.models.Payment], validate=True)
+    @ns.expect([PaymentModel], validate=True)
     def post(self):
         """Do dividend payment importing."""
         stocks.repostories.PaymentRepository(

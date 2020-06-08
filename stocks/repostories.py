@@ -1,10 +1,13 @@
 """Classes to work with storage."""
 import abc
+import datetime
+import decimal
 import typing
 
 import pymongo.database
 
 from stocks.filters.query import Query
+from stocks.objects.payment import Payment
 
 
 LIST_OF_DICTS = typing.List[typing.Dict[str, typing.Any]]  # type: ignore
@@ -58,9 +61,16 @@ class PaymentRepository(BaseRepository):
         """Primary constructor."""
         self._db = db
 
-    def search(self, query: Query):
+    def search(self, query: Query) -> typing.List[Payment]:
         """Search for payments."""
-        return list(self._db.payments.find(query))
+        return [Payment(
+            ticker=payment['ticker'],
+            declaration_date=datetime.datetime.strptime(
+                payment['declaration_date'], '%Y-%m-%d'),
+            amount=decimal.Decimal(payment['amount']),
+            is_forecast=payment['is_forecast'],
+            source=payment['source'],
+        ) for payment in self._db.payments.find(query)]
 
     def drop(self, query: Query):
         """Drop payments."""

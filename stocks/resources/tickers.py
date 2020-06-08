@@ -6,6 +6,7 @@ import flask_restx.fields
 import stocks.filtersets
 import stocks.models
 import stocks.repostories
+from stocks.objects.payment import PaymentModel
 
 
 ns = flask_restx.Namespace(
@@ -30,25 +31,26 @@ class TickersResource(flask_restx.Resource):
 
 
 @ns.route('/<ticker>/payments', doc={'params': {
-    'ticker': stocks.models.Payment['ticker'].description}})
+    'ticker': 'code of ticker'}})
 class PaymentsResource(flask_restx.Resource):
     """Basic resource that returns data about dividend paymenrs."""
 
     @ns.doc(params=stocks.filtersets.PaymentsFilterSet.as_params())
-    @ns.marshal_list_with(stocks.models.Payment, envelope='results')
+    @ns.marshal_list_with(PaymentModel, envelope='results')
     def get(self, ticker):
         """Return list of available tickers."""
-        return stocks.repostories.PaymentRepository(
+        payments = stocks.repostories.PaymentRepository(
             flask.current_app.mongo.get_database(),
         ).search(
             stocks.filtersets.PaymentsFilterSet(
                 flask.request.args,
             ).query().equal_to(ticker=ticker),
         )
+        return [payment.as_dict() for payment in payments]
 
 
 @ns.route('/<ticker>/quotes/historical', doc={'params': {
-    'ticker': stocks.models.Payment['ticker'].description}})
+    'ticker': 'code of ticker'}})
 class HistoricalQuotesResource(flask_restx.Resource):
     """Basic resource that returns data about dividend paymenrs."""
 
