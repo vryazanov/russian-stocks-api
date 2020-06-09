@@ -12,11 +12,15 @@ ns = flask_restx.Namespace(
     'crawler', description='Import financial data from crawler.')
 
 
-@ns.route('/tickers', doc={'security': 'Bearer Auth'})
-class TickersResource(flask_restx.Resource):
-    """Resource to import tickers."""
+class ServiceResource(flask_restx.Resource):
+    """Base for resources that require admin authentication."""
 
-    method_decorators = (stocks.decorators.auth_required,)
+    method_decorators = (stocks.decorators.admin_auth_required,)
+
+
+@ns.route('/tickers', doc={'security': 'Bearer Auth'})
+class TickersResource(ServiceResource):
+    """Resource to import tickers."""
 
     @ns.doc(id='import_tickers')
     @ns.expect([stocks.models.Ticker], validate=True)
@@ -31,10 +35,8 @@ class TickersResource(flask_restx.Resource):
 
 
 @ns.route('/payments', doc={'security': 'Bearer Auth'})
-class PaymentsResource(flask_restx.Resource):
+class PaymentsResource(ServiceResource):
     """Resource to import payments."""
-
-    method_decorators = (stocks.decorators.auth_required,)
 
     @ns.doc(id='import_payments')
     @ns.expect([PaymentModel], validate=True)
@@ -49,10 +51,8 @@ class PaymentsResource(flask_restx.Resource):
 
 
 @ns.route('/quotes/historical', doc={'security': 'Bearer Auth'})
-class HistoricalQuotesResource(flask_restx.Resource):
+class HistoricalQuotesResource(ServiceResource):
     """Resource to import historical quotes."""
-
-    method_decorators = (stocks.decorators.auth_required,)
 
     @ns.doc(id='import_quotes')
     @ns.expect([stocks.models.HistoricalQuote], validate=True)

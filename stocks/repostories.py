@@ -8,6 +8,7 @@ import pymongo.database
 
 from stocks.filters.query import Query
 from stocks.objects.payment import Payment
+from stocks.objects.token import Token
 
 
 LIST_OF_DICTS = typing.List[typing.Dict[str, typing.Any]]  # type: ignore
@@ -24,6 +25,10 @@ class BaseRepository(metaclass=abc.ABCMeta):
     def drop(self, query: Query):
         """Drop entities."""
 
+
+class RecreatableRepository(BaseRepository):
+    """Add some methods to work with bulk of entities."""
+
     @abc.abstractmethod
     def add_bulk(self, objects: LIST_OF_DICTS):
         """Add batch of entities."""
@@ -34,7 +39,7 @@ class BaseRepository(metaclass=abc.ABCMeta):
         self.add_bulk(objects)
 
 
-class TickerRepository(BaseRepository):
+class TickerRepository(RecreatableRepository):
     """Base repository to work with tickers."""
 
     def __init__(self, db: pymongo.database.Database):
@@ -54,7 +59,7 @@ class TickerRepository(BaseRepository):
         self._db.tickers.insert_many(objects)
 
 
-class PaymentRepository(BaseRepository):
+class PaymentRepository(RecreatableRepository):
     """Base repository to work with payments."""
 
     def __init__(self, db: pymongo.database.Database):
@@ -81,7 +86,7 @@ class PaymentRepository(BaseRepository):
         self._db.payments.insert_many(objects)
 
 
-class QuoteRepository(BaseRepository):
+class QuoteRepository(RecreatableRepository):
     """Base repository to work with historical quotes."""
 
     def __init__(self, db: pymongo.database.Database):
@@ -99,3 +104,25 @@ class QuoteRepository(BaseRepository):
     def add_bulk(self, objects: LIST_OF_DICTS):
         """Add batch of tickers."""
         self._db.quotes.insert_many(objects)
+
+
+class Tokens(BaseRepository):
+    """Repostitory to work with user tokens."""
+
+    def __init__(self, db: pymongo.database.Database):
+        """Primary constructor."""
+        self._db = db
+
+    def add(self, token: Token):
+        """Add a token to db."""
+        self._db.tokens.insert(token.as_dict())
+
+    def drop(self, query: Query):
+        """Drop tokens."""
+        self._db.tokens.drop(query)
+
+    def search(self, query: Query) -> typing.List[Token]:
+        """Search for tokens."""
+        return [
+            Token(secret_key=token['secret_key'])
+            for token in self._db.tokens.find(query)]
