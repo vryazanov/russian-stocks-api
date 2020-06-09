@@ -17,7 +17,7 @@ class BaseRepository(metaclass=abc.ABCMeta):
     """Base interface to interact with db."""
 
     @abc.abstractclassmethod
-    def search(self, query: Query) -> LIST_OF_DICTS:
+    def search(self, query: Query):  # -> BaseEntity
         """Search entities in db."""
 
     @abc.abstractclassmethod
