@@ -1,28 +1,40 @@
 """Resources to work with investment portfolios."""
+import flask
 import flask_restx
 
 from stocks.decorators import auth_required
+from stocks.filters.query import Query
 from stocks.namespace import Namespace
+from stocks.objects.asset import Asset, AssetModel
+from stocks.repostories import Assets
 
 
 ns = Namespace('portfolio', description='Portfolio related operations')
-
-
-@ns.route('', doc={'security': 'Bearer Auth'})
-class PortfolioResource(flask_restx.Resource):
-    """Reosurce that can create or delete user's portfolio."""
-
-    method_decorators = (auth_required,)
-
-    def get(self):
-        """Return portfolio."""
-        return {'success': True}
 
 
 @ns.route('/assets', doc={'security': 'Bearer Auth'})
 class AssetResource(flask_restx.Resource):
     """List of user's assets."""
 
+    method_decorators = (auth_required,)
+
+    @ns.marshal_entities_list_with(AssetModel, envelope='results')
     def get(self):
-        """Return list of assets."""
-        return {'success': True}
+        """Return list of user's assets."""
+        return Assets(
+            flask.current_app.mongo.get_database(),
+        ).search(
+            Query().equal_to(owner=flask.request.token),
+        )
+
+    @ns.expect(AssetModel, validate=True)
+    @ns.marshal_entity_with(AssetModel)
+    def post(self):
+        """Create an asset."""
+        asset = Asset(
+            owner=flask.request.token,
+            ticker=flask.request.json['ticker'],
+            quantity=flask.request.json['quantity'],
+        )
+        Assets(flask.current_app.mongo.get_database()).add(asset)
+        return asset

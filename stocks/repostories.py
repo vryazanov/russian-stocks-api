@@ -7,6 +7,7 @@ import typing
 import pymongo.database
 
 from stocks.filters.query import Query
+from stocks.objects.asset import Asset
 from stocks.objects.payment import Payment
 from stocks.objects.token import Token
 
@@ -35,11 +36,11 @@ class RecreatableRepository(BaseRepository):
 
     def recreate(self, objects: LIST_OF_DICTS):
         """Drop all entities and create new."""
-        self.drop(Query({}))
+        self.drop(Query())
         self.add_bulk(objects)
 
 
-class TickerRepository(RecreatableRepository):
+class Tickers(RecreatableRepository):
     """Base repository to work with tickers."""
 
     def __init__(self, db: pymongo.database.Database):
@@ -59,7 +60,7 @@ class TickerRepository(RecreatableRepository):
         self._db.tickers.insert_many(objects)
 
 
-class PaymentRepository(RecreatableRepository):
+class Payments(RecreatableRepository):
     """Base repository to work with payments."""
 
     def __init__(self, db: pymongo.database.Database):
@@ -86,7 +87,7 @@ class PaymentRepository(RecreatableRepository):
         self._db.payments.insert_many(objects)
 
 
-class QuoteRepository(RecreatableRepository):
+class Quotes(RecreatableRepository):
     """Base repository to work with historical quotes."""
 
     def __init__(self, db: pymongo.database.Database):
@@ -126,3 +127,27 @@ class Tokens(BaseRepository):
         return [
             Token(secret_key=token['secret_key'])
             for token in self._db.tokens.find(query)]
+
+
+class Assets(BaseRepository):
+    """Repository to work with assets."""
+
+    def __init__(self, db: pymongo.database.Database):
+        """Primary constructor."""
+        self._db = db
+
+    def add(self, asset: Asset):
+        """Add asset to db."""
+        self._db.assets.insert(asset.as_dict())
+
+    def drop(self, query: Query):
+        """Drop tokens."""
+        self._db.assets.drop(query)
+
+    def search(self, query: Query) -> typing.List[Asset]:
+        """Search for assets."""
+        return [Asset(
+            owner=asset['owner'],
+            ticker=asset['ticker'],
+            quantity=asset['quantity'],
+        ) for asset in self._db.assets.find(query)]

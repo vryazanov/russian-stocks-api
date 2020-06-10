@@ -6,6 +6,7 @@ import typing
 
 
 QueryValue = typing.Dict[str, typing.Union[str, int, bool]]
+QueryType = typing.Dict[str, QueryValue]
 
 
 if typing.TYPE_CHECKING:
@@ -17,9 +18,9 @@ else:
 class Query(TypedUserDict):
     """Dict representation of mongodb query."""
 
-    def __init__(self, data: typing.Dict[str, QueryValue]):
+    def __init__(self, data: typing.Optional[QueryType] = None):
         """Primary constructor."""
-        self.data = data
+        self.data = data or {}
 
     def equal_to(self, **kwargs) -> Query:
         """Add `$eq` operation for provided kwargs."""

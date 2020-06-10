@@ -21,7 +21,7 @@ class TickersResource(flask_restx.Resource):
     @ns.marshal_list_with(stocks.models.Ticker, envelope='results')
     def get(self):
         """Return list of available tickers."""
-        return stocks.repostories.TickerRepository(
+        return stocks.repostories.Tickers(
             flask.current_app.mongo.get_database(),
         ).search(
             stocks.filtersets.TickersFilterSet(
@@ -39,7 +39,7 @@ class PaymentsResource(flask_restx.Resource):
     @ns.marshal_entities_list_with(PaymentModel, envelope='results')
     def get(self, ticker):
         """Return list of available tickers."""
-        return stocks.repostories.PaymentRepository(
+        return stocks.repostories.Payments(
             flask.current_app.mongo.get_database(),
         ).search(
             stocks.filtersets.PaymentsFilterSet(
@@ -57,7 +57,7 @@ class HistoricalQuotesResource(flask_restx.Resource):
     @ns.marshal_list_with(stocks.models.HistoricalQuote, envelope='results')
     def get(self, ticker):
         """Return list of historical stock quotes."""
-        return stocks.repostories.QuoteRepository(
+        return stocks.repostories.Quotes(
             flask.current_app.mongo.get_database(),
         ).search(
             stocks.filtersets.QuoteFilterSet(

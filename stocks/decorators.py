@@ -25,13 +25,14 @@ def auth_required(f):
         if not auth_token:
             flask.abort(401, 'Authorization token is not provided.')
 
-        query = Query({})
-        query.equal_to(secret_key=auth_token)
+        query = Query().equal_to(secret_key=auth_token)
 
         tokens = Tokens(flask.current_app.mongo.get_database()).search(query)
 
         if len(tokens) != 1:
             flask.abort(403, 'Authorization token is not valid.')
+
+        flask.request.token = auth_token
 
         return f(*args, **kwargs)
     return wrapper
