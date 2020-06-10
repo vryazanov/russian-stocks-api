@@ -3,9 +3,10 @@ import flask
 import flask_restx
 
 import stocks.decorators
-import stocks.models
 import stocks.repostories
 from stocks.objects.payment import PaymentModel
+from stocks.objects.quote import QuoteModel
+from stocks.objects.ticker import TickerModel
 
 
 ns = flask_restx.Namespace(
@@ -23,7 +24,7 @@ class TickersResource(ServiceResource):
     """Resource to import tickers."""
 
     @ns.doc(id='import_tickers')
-    @ns.expect([stocks.models.Ticker], validate=True)
+    @ns.expect([TickerModel], validate=True)
     def post(self):
         """Do tickers importing."""
         stocks.repostories.Tickers(
@@ -55,7 +56,7 @@ class HistoricalQuotesResource(ServiceResource):
     """Resource to import historical quotes."""
 
     @ns.doc(id='import_quotes')
-    @ns.expect([stocks.models.HistoricalQuote], validate=True)
+    @ns.expect([QuoteModel], validate=True)
     def post(self):
         """Do historical quotes importing."""
         stocks.repostories.Quotes(

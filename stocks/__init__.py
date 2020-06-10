@@ -8,9 +8,10 @@ import pymongo
 import pymongo.uri_parser
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from stocks import models
 from stocks.objects.asset import AssetModel
 from stocks.objects.payment import PaymentModel
+from stocks.objects.quote import QuoteModel
+from stocks.objects.ticker import TickerModel
 from stocks.objects.token import TokenModel
 from stocks.resources import imports, portfolio, tickers, tokens
 
@@ -47,8 +48,8 @@ def init_api(app: flask.Flask) -> flask_restx.Api:
     api.add_namespace(tickers.ns)
     api.add_namespace(imports.ns)
 
-    api.add_model(models.Ticker.name, models.Ticker)
-    api.add_model(models.HistoricalQuote.name, models.HistoricalQuote)
+    api.add_model(TickerModel.name, TickerModel)
+    api.add_model(QuoteModel.name, QuoteModel)
     api.add_model(PaymentModel.name, PaymentModel)
     api.add_model(TokenModel.name, TokenModel)
     api.add_model(AssetModel.name, AssetModel)
