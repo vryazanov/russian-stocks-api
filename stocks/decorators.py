@@ -1,4 +1,6 @@
 """List of method decorators."""
+import functools
+
 import flask
 
 from stocks.filters.query import Query
@@ -7,6 +9,7 @@ from stocks.repostories import Tokens
 
 def admin_auth_required(f):
     """Check authorization token."""
+    @functools.wraps(f)
     def wrapper(*args, **kwargs):
         auth_token = flask.request.headers.get('X-Authorization', '')
         if not auth_token:
@@ -19,6 +22,7 @@ def admin_auth_required(f):
 
 def auth_required(f):
     """Check that provided token exists in the db."""
+    @functools.wraps(f)
     def wrapper(*args, **kwargs):
         auth_token = flask.request.headers.get('X-Authorization', '')
 
