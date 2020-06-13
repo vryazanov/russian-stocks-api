@@ -38,3 +38,11 @@ class AssetResource(flask_restx.Resource):
         )
         Assets(flask.current_app.mongo.get_database()).add(asset)
         return asset
+
+    def delete(self):
+        """Drop all assets."""
+        return Assets(
+            flask.current_app.get_database(),
+        ).drop(
+            Query().equal_to(owner=flask.request.token),
+        )
