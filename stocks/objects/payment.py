@@ -22,6 +22,10 @@ class Payment(BaseEntity):
         self._source = source
         self._is_forecast = is_forecast
 
+    def amount(self) -> decimal.Decimal:
+        """Return amount of payment."""
+        return self._amount
+
     @classmethod
     def as_model(cls) -> flask_restx.Model:
         """As a swagger model."""

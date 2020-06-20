@@ -4,7 +4,7 @@ import flask_restx
 import flask_restx.fields
 
 import stocks.filtersets
-import stocks.repostories
+from stocks.containers import Repositories
 from stocks.namespace import Namespace
 from stocks.objects.payment import PaymentModel
 from stocks.objects.quote import QuoteModel
@@ -22,9 +22,7 @@ class TickersResource(flask_restx.Resource):
     @ns.marshal_entities_list_with(TickerModel, envelope='results')
     def get(self):
         """Return list of available tickers."""
-        return stocks.repostories.Tickers(
-            flask.current_app.mongo.get_database(),
-        ).search(
+        return Repositories.tickers.search(
             stocks.filtersets.TickersFilterSet(
                 flask.request.args,
             ).query(),
@@ -40,9 +38,7 @@ class PaymentsResource(flask_restx.Resource):
     @ns.marshal_entities_list_with(PaymentModel, envelope='results')
     def get(self, ticker):
         """Return list of available tickers."""
-        return stocks.repostories.Payments(
-            flask.current_app.mongo.get_database(),
-        ).search(
+        return Repositories.payments.search(
             stocks.filtersets.PaymentsFilterSet(
                 flask.request.args,
             ).query().equal_to(ticker=ticker),
@@ -58,9 +54,7 @@ class HistoricalQuotesResource(flask_restx.Resource):
     @ns.marshal_entities_list_with(QuoteModel, envelope='results')
     def get(self, ticker):
         """Return list of historical stock quotes."""
-        return stocks.repostories.Quotes(
-            flask.current_app.mongo.get_database(),
-        ).search(
+        return Repositories.quotes.search(
             stocks.filtersets.QuoteFilterSet(
                 flask.request.args,
             ).query().equal_to(ticker=ticker),

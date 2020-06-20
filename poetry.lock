@@ -79,6 +79,14 @@ version = "1.3.0"
 
 [[package]]
 category = "main"
+description = "Dependency Injection for Humans"
+name = "dependencies"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+version = "2.0.0"
+
+[[package]]
+category = "main"
 description = "Docutils -- Python Documentation Utilities"
 name = "docutils"
 optional = false
@@ -779,7 +787,7 @@ termcolor = ["termcolor"]
 watchdog = ["watchdog"]
 
 [metadata]
-content-hash = "b593ebd6b957868ef33c35de620efadb18e2671af750d6bcd98a1ed205fde77b"
+content-hash = "6105366565e9e2620788f106a19da9cdb646d6253cf9ca8f5844aca2a6ff975c"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -814,6 +822,10 @@ colorama = [
 darglint = [
     {file = "darglint-1.3.0-py3-none-any.whl", hash = "sha256:bb5b0c7e1b0dd4b16d1c355db61a230b68f5537e483cc9e8a8f4b925314b5fad"},
     {file = "darglint-1.3.0.tar.gz", hash = "sha256:a20546d703c8608a260048c5721dad638e9d439d1aaaff1891ac3bfa6b2e8d96"},
+]
+dependencies = [
+    {file = "dependencies-2.0.0-py2.py3-none-any.whl", hash = "sha256:9134335480dfc46c2af594b3d3b5f2bd61d6b4103a8ada135a792b58621b88f3"},
+    {file = "dependencies-2.0.0.tar.gz", hash = "sha256:eb913abb4044da8664bff19f63ca50154cad36c0aa720bbfb67e131997666679"},
 ]
 docutils = [
     {file = "docutils-0.16-py2.py3-none-any.whl", hash = "sha256:0c5b78adfbf7762415433f5515cd5c9e762339e23369dbe8000d84a4bf4ab3af"},

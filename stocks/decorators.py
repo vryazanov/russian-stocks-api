@@ -3,8 +3,8 @@ import functools
 
 import flask
 
+from stocks.containers import Repositories
 from stocks.filters.query import Query
-from stocks.repostories import Tokens
 
 
 def admin_auth_required(f):
@@ -31,7 +31,7 @@ def auth_required(f):
 
         query = Query().equal_to(secret_key=auth_token)
 
-        tokens = Tokens(flask.current_app.mongo.get_database()).search(query)
+        tokens = Repositories.tokens.search(query)
 
         if len(tokens) != 1:
             flask.abort(403, 'Authorization token is not valid.')

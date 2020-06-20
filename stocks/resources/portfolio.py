@@ -2,14 +2,27 @@
 import flask
 import flask_restx
 
+from stocks.containers import Repositories
 from stocks.decorators import auth_required
-from stocks.filters.query import Query
+from stocks.filters.query import AssetQuery
 from stocks.namespace import Namespace
 from stocks.objects.asset import Asset, AssetModel
-from stocks.repostories import Assets
+from stocks.objects.portfolio import Portfolio, PortfolioModel
 
 
 ns = Namespace('portfolio', description='Portfolio related operations')
+
+
+@ns.route('', doc={'security': 'Bearer Auth'})
+class PortfolioResource(flask_restx.Resource):
+    """Portfolio resource."""
+
+    method_decorators = (auth_required,)
+
+    @ns.marshal_entity_with(PortfolioModel)
+    def get(self):
+        """Return info about user's portfolio."""
+        return Portfolio(flask.request.token, Repositories.assets)
 
 
 @ns.route('/assets', doc={'security': 'Bearer Auth'})
@@ -21,11 +34,8 @@ class AssetResource(flask_restx.Resource):
     @ns.marshal_entities_list_with(AssetModel, envelope='results')
     def get(self):
         """Return list of user's assets."""
-        return Assets(
-            flask.current_app.mongo.get_database(),
-        ).search(
-            Query().equal_to(owner=flask.request.token),
-        )
+        query = AssetQuery().belong_to(flask.request.token)
+        return Repositories.assets.search(query)
 
     @ns.expect(AssetModel, validate=True)
     @ns.marshal_entity_with(AssetModel)
@@ -35,14 +45,12 @@ class AssetResource(flask_restx.Resource):
             owner=flask.request.token,
             ticker=flask.request.json['ticker'],
             quantity=flask.request.json['quantity'],
+            payments=Repositories.payments,
         )
-        Assets(flask.current_app.mongo.get_database()).add(asset)
+        Repositories.assets.add(asset)
         return asset
 
     def delete(self):
         """Drop all assets."""
-        return Assets(
-            flask.current_app.get_database(),
-        ).drop(
-            Query().equal_to(owner=flask.request.token),
-        )
+        query = AssetQuery().belong_to(owner=flask.request.token)
+        return Repositories.assets.drop(query)

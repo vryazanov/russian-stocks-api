@@ -1,10 +1,9 @@
 """Respurces to work with tokens."""
-import flask
 import flask_restx
 
+from stocks.containers import Repositories
 from stocks.namespace import Namespace
 from stocks.objects.token import Token, TokenModel
-from stocks.repostories import Tokens
 
 
 ns = Namespace('tokens', description='manage user tokens')
@@ -19,5 +18,5 @@ class TokenResource(flask_restx.Resource):
     def post(self):
         """Generate a new token and return it."""
         token = Token.generate()
-        Tokens(flask.current_app.mongo.get_database()).add(token)
+        Repositories.tokens.add(token)
         return token

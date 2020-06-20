@@ -10,6 +10,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from stocks.objects.asset import AssetModel
 from stocks.objects.payment import PaymentModel
+from stocks.objects.portfolio import PortfolioModel, YearPaymentModel
 from stocks.objects.quote import QuoteModel
 from stocks.objects.ticker import TickerModel
 from stocks.objects.token import TokenModel
@@ -52,6 +53,8 @@ def init_api(app: flask.Flask) -> flask_restx.Api:
     api.add_model(QuoteModel.name, QuoteModel)
     api.add_model(PaymentModel.name, PaymentModel)
     api.add_model(TokenModel.name, TokenModel)
+    api.add_model(PortfolioModel.name, PortfolioModel)
+    api.add_model(YearPaymentModel.name, YearPaymentModel)
     api.add_model(AssetModel.name, AssetModel)
 
     return api

@@ -6,7 +6,7 @@ import typing
 
 import pymongo.database
 
-from stocks.filters.query import Query
+from stocks.filters.query import AssetQuery, PaymentQuery, Query
 from stocks.objects.abc import BaseEntity
 from stocks.objects.asset import Asset
 from stocks.objects.payment import Payment
@@ -18,19 +18,23 @@ from stocks.objects.token import Token
 LIST_OF_DICTS = typing.List[typing.Dict[str, typing.Any]]  # type: ignore
 
 
-class BaseRepository(metaclass=abc.ABCMeta):
+EntityType = typing.TypeVar('EntityType', bound=BaseEntity)
+QueryType = typing.TypeVar('QueryType', bound=Query, contravariant=True)
+
+
+class BaseRepository(typing.Protocol[EntityType, QueryType]):
     """Base interface to interact with db."""
 
     @abc.abstractclassmethod
-    def search(self, query: Query) -> typing.List[BaseEntity]:
+    def search(self, query: QueryType) -> typing.List[EntityType]:
         """Search entities in db."""
 
     @abc.abstractclassmethod
-    def drop(self, query: Query):
+    def drop(self, query: QueryType):
         """Drop entities."""
 
 
-class RecreatableRepository(BaseRepository):
+class RecreatableRepository(BaseRepository[EntityType, QueryType]):
     """Add some methods to work with bulk of entities."""
 
     @abc.abstractmethod
@@ -39,18 +43,18 @@ class RecreatableRepository(BaseRepository):
 
     def recreate(self, objects: LIST_OF_DICTS):
         """Drop all entities and create new."""
-        self.drop(Query())
+        self.drop(Query())  # type: ignore
         self.add_bulk(objects)
 
 
-class Tickers(RecreatableRepository):
+class Tickers(RecreatableRepository[Ticker, Query]):
     """Base repository to work with tickers."""
 
     def __init__(self, db: pymongo.database.Database):
         """Primary constructor."""
         self._db = db
 
-    def search(self, query: Query) -> typing.List[BaseEntity]:
+    def search(self, query: Query) -> typing.List[Ticker]:
         """Search for tickers."""
         return [
             Ticker(
@@ -67,14 +71,14 @@ class Tickers(RecreatableRepository):
         self._db.tickers.insert_many(objects)
 
 
-class Payments(RecreatableRepository):
+class Payments(RecreatableRepository[Payment, PaymentQuery]):
     """Base repository to work with payments."""
 
     def __init__(self, db: pymongo.database.Database):
         """Primary constructor."""
         self._db = db
 
-    def search(self, query: Query) -> typing.List[BaseEntity]:
+    def search(self, query: PaymentQuery) -> typing.List[Payment]:
         """Search for payments."""
         return [Payment(
             ticker=payment['ticker'],
@@ -85,7 +89,7 @@ class Payments(RecreatableRepository):
             source=payment['source'],
         ) for payment in self._db.payments.find(query)]
 
-    def drop(self, query: Query):
+    def drop(self, query: PaymentQuery):
         """Drop payments."""
         self._db.payments.drop(query)
 
@@ -94,14 +98,14 @@ class Payments(RecreatableRepository):
         self._db.payments.insert_many(objects)
 
 
-class Quotes(RecreatableRepository):
+class Quotes(RecreatableRepository[Quote, Query]):
     """Base repository to work with historical quotes."""
 
     def __init__(self, db: pymongo.database.Database):
         """Primary constructor."""
         self._db = db
 
-    def search(self, query: Query) -> typing.List[BaseEntity]:
+    def search(self, query: Query) -> typing.List[Quote]:
         """Search for quotes."""
         return [
             Quote(
@@ -120,7 +124,7 @@ class Quotes(RecreatableRepository):
         self._db.quotes.insert_many(objects)
 
 
-class Tokens(BaseRepository):
+class Tokens(BaseRepository[Token, Query]):
     """Repostitory to work with user tokens."""
 
     def __init__(self, db: pymongo.database.Database):
@@ -135,32 +139,34 @@ class Tokens(BaseRepository):
         """Drop tokens."""
         self._db.tokens.drop(query)
 
-    def search(self, query: Query) -> typing.List[BaseEntity]:
+    def search(self, query: Query) -> typing.List[Token]:
         """Search for tokens."""
         return [
             Token(secret_key=token['secret_key'])
             for token in self._db.tokens.find(query)]
 
 
-class Assets(BaseRepository):
+class Assets(BaseRepository[Asset, AssetQuery]):
     """Repository to work with assets."""
 
-    def __init__(self, db: pymongo.database.Database):
+    def __init__(self, db: pymongo.database.Database, payments: Payments):
         """Primary constructor."""
         self._db = db
+        self._payments = payments
 
     def add(self, asset: Asset):
         """Add asset to db."""
         self._db.assets.insert(asset.as_dict())
 
-    def drop(self, query: Query):
+    def drop(self, query: AssetQuery):
         """Drop tokens."""
         self._db.assets.drop(query)
 
-    def search(self, query: Query) -> typing.List[BaseEntity]:
+    def search(self, query: AssetQuery) -> typing.List[Asset]:
         """Search for assets."""
         return [Asset(
             owner=asset['owner'],
             ticker=asset['ticker'],
             quantity=asset['quantity'],
+            payments=self._payments,
         ) for asset in self._db.assets.find(query)]
