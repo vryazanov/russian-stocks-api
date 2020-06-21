@@ -7,7 +7,8 @@ import flask_restx
 import flask_restx.fields
 
 from stocks.filters.query import AssetQuery
-from stocks.objects.abc import ANY_PRIMITIVE, BaseEntity
+from stocks.objects.abc import BaseEntity
+from stocks.rest_fields import Fixed
 
 
 if typing.TYPE_CHECKING:
@@ -50,7 +51,7 @@ class Portfolio(BaseEntity):
                 {
                     'year': 2020,
                     'amount': float(self.dividends_within_date_range(
-                        'smartlab',
+                        'dohod',
                         datetime.date(2020, 1, 1),
                         datetime.date(2021, 1, 1),
                     )),
@@ -61,7 +62,7 @@ class Portfolio(BaseEntity):
 
 YearPaymentModel = flask_restx.Model('YearPayment', {
     'year': flask_restx.fields.Integer(),
-    'amount': flask_restx.fields.Fixed(decimals=2),
+    'amount': Fixed(decimals=2),
 })
 
 PortfolioModel = Portfolio.as_model()
