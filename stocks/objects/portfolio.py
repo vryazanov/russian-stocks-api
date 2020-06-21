@@ -18,6 +18,8 @@ if typing.TYPE_CHECKING:
 class Portfolio(BaseEntity):
     """Portfolio object."""
 
+    START_YEAR = 2015
+
     def __init__(self, owner: str, assets: 'Assets'):
         """Primary constructor."""
         self._owner = owner
@@ -46,16 +48,17 @@ class Portfolio(BaseEntity):
 
     def as_dict(self) -> typing.Dict[str, typing.Any]:  # type: ignore
         """Serialize portfolio."""
+        today = datetime.datetime.today()
         return {
             'payments': [
                 {
-                    'year': 2020,
+                    'year': year,
                     'amount': float(self.dividends_within_date_range(
                         'dohod',
-                        datetime.date(2020, 1, 1),
-                        datetime.date(2021, 1, 1),
+                        datetime.date(year, 1, 1),
+                        datetime.date(year + 1, 1, 1),
                     )),
-                },
+                } for year in range(self.START_YEAR, today)
             ],
         }
 
