@@ -33,10 +33,13 @@ class Asset(BaseEntity):
         self, date_from: datetime.date, date_to: datetime.date,
     ) -> decimal.Decimal:
         """Calculate amount of dividends within date range."""
-        payments = self._payments.search(
-            PaymentQuery().within_date_range(self._ticker, date_from, date_to))
-        return decimal.Decimal(
-            sum(payment.amount() * self._quantity for payment in payments))
+        query = PaymentQuery()
+        query.within_date_range(self._ticker, date_from, date_to)
+
+        payments = self._payments.search(query)
+        result = sum(payment.amount() * self._quantity for payment in payments)
+
+        return decimal.Decimal(result)
 
     @classmethod
     def as_model(cls) -> flask_restx.Model:
