@@ -26,7 +26,10 @@ class Query(TypedUserDict):
     def _set_operator(self, operator: str, **kwargs) -> Query:
         """Update query."""
         for key, value in kwargs.items():
-            self[key] = {operator: value}
+            if key not in self:
+                self[key] = {operator: value}
+            else:
+                self[key][operator] = value
         return self
 
     def equal_to(self, **kwargs) -> Query:
@@ -52,9 +55,9 @@ class PaymentQuery(Query):
         return self.equal_to(
             ticker=ticker,
         ).greater_than(
-            declaration_date=date_from.strftime('%Y-%-m-%d'),
+            declaration_date=date_from.strftime('%Y-%m-%d'),
         ).less_than(
-            declaration_date=date_to.strftime('%Y-%-m-%d'),
+            declaration_date=date_to.strftime('%Y-%m-%d'),
         )
 
 

@@ -2,6 +2,7 @@
 import flask
 import flask_restx
 
+import stocks.containers
 import stocks.decorators
 import stocks.repostories
 from stocks.objects.payment import PaymentModel
@@ -27,11 +28,7 @@ class TickersResource(ServiceResource):
     @ns.expect([TickerModel], validate=True)
     def post(self):
         """Do tickers importing."""
-        stocks.repostories.Tickers(
-            flask.current_app.mongo.get_database(),
-        ).recreate(
-            flask.request.json,
-        )
+        stocks.containers.Repositories.tickers.recreate(flask.request.json)
         return {'success': True}
 
 
@@ -43,11 +40,7 @@ class PaymentsResource(ServiceResource):
     @ns.expect([PaymentModel], validate=True)
     def post(self):
         """Do dividend payment importing."""
-        stocks.repostories.Payments(
-            flask.current_app.mongo.get_database(),
-        ).recreate(
-            flask.request.json,
-        )
+        stocks.containers.Repositories.payments.recreate(flask.request.json)
         return {'success': True}
 
 
@@ -59,9 +52,5 @@ class HistoricalQuotesResource(ServiceResource):
     @ns.expect([QuoteModel], validate=True)
     def post(self):
         """Do historical quotes importing."""
-        stocks.repostories.Quotes(
-            flask.current_app.mongo.get_database(),
-        ).recreate(
-            flask.request.json,
-        )
+        stocks.containers.Repositories.quotes.recreate(flask.request.json)
         return {'success': True}

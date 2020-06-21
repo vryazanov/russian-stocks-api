@@ -82,8 +82,7 @@ class Payments(RecreatableRepository[Payment, PaymentQuery]):
         """Search for payments."""
         return [Payment(
             ticker=payment['ticker'],
-            declaration_date=datetime.datetime.strptime(
-                payment['declaration_date'], '%Y-%m-%d'),
+            declaration_date=payment['declaration_date'],
             amount=decimal.Decimal(payment['amount']),
             is_forecast=payment['is_forecast'],
             source=payment['source'],

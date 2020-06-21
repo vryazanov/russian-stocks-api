@@ -35,7 +35,7 @@ class Payment(BaseEntity):
                 description='code of ticker',
                 example='SBER',
             ),
-            'declaration_date': flask_restx.fields.String(
+            'declaration_date': flask_restx.fields.Date(
                 required=True,
                 example='2020-04-01',
             ),
@@ -58,7 +58,7 @@ class Payment(BaseEntity):
         """Serialize payment details."""
         return {
             'ticker': self._ticker,
-            'declaration_date': self._declaration_date.strftime('%Y-%m-%d'),
+            'declaration_date': self._declaration_date,
             'amount': self._amount,
             'source': self._source,
             'is_forecast': self._is_forecast,
