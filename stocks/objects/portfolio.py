@@ -58,7 +58,7 @@ class Portfolio(BaseEntity):
                         datetime.date(year, 1, 1),
                         datetime.date(year + 1, 1, 1),
                     )),
-                } for year in range(self.START_YEAR, today.year)
+                } for year in range(self.START_YEAR, today.year + 1)
             ],
         }
 
