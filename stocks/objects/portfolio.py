@@ -49,11 +49,11 @@ class Portfolio(BaseEntity):
             'payments': [
                 {
                     'year': 2020,
-                    'amount': self.dividends_within_date_range(
+                    'amount': float(self.dividends_within_date_range(
                         'smartlab',
                         datetime.date(2020, 1, 1),
                         datetime.date(2021, 1, 1),
-                    ),
+                    )),
                 },
             ],
         }
