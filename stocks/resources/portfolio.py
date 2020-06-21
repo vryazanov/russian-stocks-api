@@ -19,6 +19,7 @@ class PortfolioResource(flask_restx.Resource):
 
     method_decorators = (auth_required,)
 
+    @ns.doc(id='get_portfolio')
     @ns.marshal_entity_with(PortfolioModel)
     def get(self):
         """Return info about user's portfolio."""
@@ -31,12 +32,14 @@ class AssetResource(flask_restx.Resource):
 
     method_decorators = (auth_required,)
 
+    @ns.doc(id='get_assets')
     @ns.marshal_entities_list_with(AssetModel, envelope='results')
     def get(self):
         """Return list of user's assets."""
         query = AssetQuery().belong_to(flask.request.token)
         return Repositories.assets.search(query)
 
+    @ns.doc(id='post_asset')
     @ns.expect(AssetModel, validate=True)
     @ns.marshal_entity_with(AssetModel)
     def post(self):
@@ -50,6 +53,7 @@ class AssetResource(flask_restx.Resource):
         Repositories.assets.add(asset)
         return asset
 
+    @ns.doc(id='drop_assets')
     def delete(self):
         """Drop all assets."""
         query = AssetQuery().belong_to(owner=flask.request.token)
