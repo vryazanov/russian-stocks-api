@@ -6,16 +6,12 @@ authors = ["Vadim Ryazanov <vadimvoronezh@yandex.ru>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-flask = "^1.1.2"
-Werkzeug = "0.16.1"
-wemake-python-styleguide = "^0.14.0"
 python-dotenv = "^0.13.0"
-waitress = "^1.4.3"
-Flask-SQLAlchemy = "^2.4.1"
 pymongo = "^3.10.1"
-flask-restx = "^0.2.0"
-dependencies = "^2.0.0"
 bravado = "^10.6.2"
+pydantic = "^1.6.1"
+fastapi = "^0.61.1"
+uvicorn = "^0.12.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.4.2"

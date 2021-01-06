@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  web:
+    build: .
+    environment:
+      PORT: 8000
+      MONGODB_URI: mongodb://root:password@mongo:27017/
+    depends_on:
+      - mongo
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+  mongo:
+    image: mongo:4
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
