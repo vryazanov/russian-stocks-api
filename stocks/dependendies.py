@@ -3,7 +3,7 @@ import fastapi
 import sqlalchemy
 import sqlalchemy.orm
 
-from stocks.repositories.uow import SqlUoW
+from stocks.repositories.uow import UoW
 from stocks.settings import Settings
 
 
@@ -12,9 +12,9 @@ def get_settings() -> Settings:
     return Settings()
 
 
-def get_uow(settings: Settings = fastapi.Depends(get_settings)) -> SqlUoW:
+def get_uow(settings: Settings = fastapi.Depends(get_settings)) -> UoW:
     """Build an instance of unit of work."""
     session_factory = sqlalchemy.orm.sessionmaker(
         autocommit=False, autoflush=False,
         bind=sqlalchemy.create_engine(settings.sqlalchemy_uri))
-    return SqlUoW(session_factory)
+    return UoW(session_factory)

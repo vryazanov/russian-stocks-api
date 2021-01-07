@@ -22,6 +22,7 @@ mypy = "^0.770"
 wemake-python-styleguide = "^0.14.0"
 typing_extensions = "^3.7.4"
 isort = "^4.3.21"
+sqlalchemy-stubs = "^0.3"
 
 [build-system]
 requires = ["poetry>=0.12"]

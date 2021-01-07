@@ -1,9 +1,11 @@
 """Routes for tickers api."""
+import datetime
+
 import fastapi
 
 from stocks import dependendies
-from stocks.entities import Payment, Ticker
-from stocks.repositories.abc import BaseUnitOfWork
+from stocks.entities import Payment, Ticker, Quote
+from stocks.repositories.uow import UoW
 from stocks.responses import ListResponse
 
 
@@ -16,10 +18,11 @@ router = fastapi.APIRouter()
     operation_id='get_tickers',
 )
 async def tickers(
-    uow: BaseUnitOfWork = fastapi.Depends(dependendies.get_uow),
-):
+    uow: UoW = fastapi.Depends(dependendies.get_uow),
+) -> ListResponse[Ticker]:
     """Return the list of available tickers."""
-    return ListResponse(results=[])
+    with uow:
+        return ListResponse(results=uow.tickers.iterator({}))
 
 
 @router.get(
@@ -29,7 +32,25 @@ async def tickers(
 )
 async def payments(
     ticker: str,
-    uow: BaseUnitOfWork = fastapi.Depends(dependendies.get_uow),
-):
+    uow: UoW = fastapi.Depends(dependendies.get_uow),
+) -> ListResponse[Ticker]:
     """Return the list of available tickers."""
-    return ListResponse(results=[])
+    with uow:
+        return ListResponse(results=uow.payments.iterator({'ticker': ticker}))
+
+
+@router.get(
+    '/{ticker}/quotes/{date}',
+    response_model=ListResponse[Quote],
+    operation_id='get_quotes',
+)
+async def quotes(
+    ticker: str, date: datetime.date,
+    uow: UoW = fastapi.Depends(dependendies.get_uow),
+) -> ListResponse[Ticker]:
+    """Return the list of available tickers."""
+    with uow:
+        return ListResponse(results=uow.quotes.iterator({
+            'ticker': ticker,
+            'date': date,
+        }))
