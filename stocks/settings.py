@@ -11,4 +11,4 @@ class Settings(pydantic.BaseSettings):
     """
 
     sqlalchemy_uri: str = os.environ['SQLALCHEMY_URI']
-    import_token: str = 'some-token'
+    import_token: str = os.environ['AUTH_IMPORT_TOKEN']
