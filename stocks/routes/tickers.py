@@ -1,12 +1,10 @@
 """Routes for tickers api."""
 import fastapi
-import sqlalchemy
-import sqlalchemy.orm
 
 from stocks import dependendies
 from stocks.entities import Payment, Ticker
-from stocks.responses import ListResponse
 from stocks.repositories.abc import BaseUnitOfWork
+from stocks.responses import ListResponse
 
 
 router = fastapi.APIRouter()

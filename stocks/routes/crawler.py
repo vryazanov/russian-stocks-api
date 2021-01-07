@@ -5,7 +5,7 @@ import fastapi
 import fastapi.security
 
 from stocks import dependendies, responses, settings
-from stocks.entities import PaymentCreate, Ticker
+from stocks.entities import PaymentCreate, QuoteCreate, Ticker
 from stocks.repositories.abc import BaseUnitOfWork
 
 
@@ -66,4 +66,20 @@ async def payments(
 ) -> responses.Ok:
     """Take a list of tickers and save to db."""
     create_many(uow.payments, entities)
+    return responses.Ok()
+
+
+@router.post(
+    '/quotes/',
+    response_model=responses.Ok,
+    operation_id='import_quotes',
+    summary='Import stock quotes.',
+    dependencies=[fastapi.Depends(check_import_token)],
+)
+async def quotes(
+    entities: typing.List[QuoteCreate],
+    uow: BaseUnitOfWork = fastapi.Depends(within_uow),
+) -> responses.Ok:
+    """Take a list of tickers and save to db."""
+    create_many(uow.quotes, entities)
     return responses.Ok()

@@ -22,15 +22,17 @@ class BaseRepository(
 
 TickerT = typing.TypeVar('TickerT')
 PaymentT = typing.TypeVar('PaymentT')
+QuoteT = typing.TypeVar('QuoteT')
 
 
 class BaseUnitOfWork(
-    typing.Protocol[TickerT, PaymentT], metaclass=abc.ABCMeta,
+    typing.Protocol[TickerT, PaymentT, QuoteT], metaclass=abc.ABCMeta,
 ):
     """Base unit of work."""
 
     tickers: BaseRepository[TickerT]
     payments: BaseRepository[PaymentT]
+    quotes: BaseRepository[QuoteT]
 
     def __exit__(self, *args, **kwargs) -> None:
         """Rollback transaction in case of exceptions."""

@@ -30,6 +30,30 @@ class Ticker(pydantic.BaseModel):
         orm_mode = True
 
 
+class QuoteBase(pydantic.BaseModel):
+    """Base stock quote."""
+
+    ticker: TickerCode
+    date: datetime.date
+    open_price: decimal.Decimal
+    close_price: decimal.Decimal
+
+    class Config:
+        """Model config."""
+
+        orm_mode = True
+
+
+class Quote(QuoteBase):
+    """Quote entity."""
+
+    id: uuid.UUID
+
+
+class QuoteCreate(QuoteBase):
+    """Entity to create quote."""
+
+
 class PaymentBase(pydantic.BaseModel):
     """Base dividend payment."""
 

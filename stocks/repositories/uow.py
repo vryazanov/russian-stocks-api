@@ -1,11 +1,12 @@
 """Unit of works."""
-from stocks.entities import Ticker, Payment
+from stocks.entities import Payment, Quote, Ticker
 from stocks.repositories.abc import BaseUnitOfWork
-from stocks.repositories.tickers import Tickers
 from stocks.repositories.payments import Payments
+from stocks.repositories.quotes import Quotes
+from stocks.repositories.tickers import Tickers
 
 
-class SqlUoW(BaseUnitOfWork[Ticker, Payment]):
+class SqlUoW(BaseUnitOfWork[Ticker, Payment, Quote]):
     """SQL unit of work."""
 
     def __init__(self, session_factory):
@@ -17,6 +18,7 @@ class SqlUoW(BaseUnitOfWork[Ticker, Payment]):
         self.session = self.session_factory()
         self.tickers = Tickers(self.session)
         self.payments = Payments(self.session)
+        self.quotes = Quotes(self.session)
 
     def __exit__(self, *args, **kwargs) -> None:
         """Close db session."""
