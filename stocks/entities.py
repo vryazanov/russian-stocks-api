@@ -2,12 +2,14 @@
 import datetime
 import decimal
 import enum
+import secrets
 import typing
 import uuid
 
 import pydantic
 
 
+TokenCode = typing.NewType('TokenCode', str)
 TickerCode = typing.NewType('TickerCode', str)
 
 
@@ -77,3 +79,54 @@ class Payment(PaymentBase):
 
 class PaymentCreate(PaymentBase):
     """Entity to create payment."""
+
+
+class Token(pydantic.BaseModel):
+    """Token."""
+
+    token: TokenCode
+
+    class Config:
+        """Model config."""
+
+        orm_mode = True
+
+    @classmethod
+    def generate(cls) -> 'Token':
+        """Generate random token."""
+        return Token(token=secrets.token_hex(nbytes=16))
+
+
+class PfAction(str, enum.Enum):
+    """Portfolio action."""
+
+    sell = 'sell'
+    buy = 'buy'
+
+
+class PfOperationBase(pydantic.BaseModel):
+    """Base portfolio operation."""
+
+    action: PfAction
+
+    ticker: str
+    quantity: int
+    price: decimal.Decimal  # per one
+
+    class Config:
+        """Model config."""
+
+        orm_mode = True
+
+
+class PfOperationCreate(PfOperationBase):
+    """Entity to create operation."""
+
+    token: TokenCode
+
+
+class PfOperation(PfOperationBase):
+    """Portfolio operation."""
+
+    id: uuid.UUID
+    performed_at: datetime.datetime

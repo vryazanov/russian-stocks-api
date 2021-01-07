@@ -6,7 +6,7 @@ import sqlalchemy.orm
 import typing_extensions
 
 from stocks import db
-from stocks.entities import QuoteBase, Quote, QuoteCreate
+from stocks.entities import Quote, QuoteBase, QuoteCreate
 from stocks.repositories.abc import BaseRepository
 
 

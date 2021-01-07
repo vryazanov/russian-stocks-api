@@ -5,7 +5,7 @@ import sqlalchemy.orm
 import typing_extensions
 
 from stocks import db
-from stocks.entities import PaymentBase, Payment, PaymentCreate
+from stocks.entities import Payment, PaymentBase, PaymentCreate
 from stocks.repositories.abc import BaseRepository
 
 

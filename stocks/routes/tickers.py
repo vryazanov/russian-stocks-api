@@ -4,7 +4,7 @@ import datetime
 import fastapi
 
 from stocks import dependendies
-from stocks.entities import Payment, Ticker, Quote
+from stocks.entities import Payment, Quote, Ticker
 from stocks.repositories.uow import UoW
 from stocks.responses import ListResponse
 
@@ -22,7 +22,8 @@ async def tickers(
 ) -> ListResponse[Ticker]:
     """Return the list of available tickers."""
     with uow:
-        return ListResponse(results=uow.tickers.iterator({}))
+        results = uow.tickers.iterator({})
+    return ListResponse(results=results)
 
 
 @router.get(
@@ -36,7 +37,8 @@ async def payments(
 ) -> ListResponse[Ticker]:
     """Return the list of available tickers."""
     with uow:
-        return ListResponse(results=uow.payments.iterator({'ticker': ticker}))
+        results = uow.payments.iterator({'ticker': ticker})
+    return ListResponse(results=results)
 
 
 @router.get(
@@ -50,7 +52,5 @@ async def quotes(
 ) -> ListResponse[Ticker]:
     """Return the list of available tickers."""
     with uow:
-        return ListResponse(results=uow.quotes.iterator({
-            'ticker': ticker,
-            'date': date,
-        }))
+        results = uow.quotes.iterator({'ticker': ticker, 'date': date})
+    return ListResponse(results=results)
