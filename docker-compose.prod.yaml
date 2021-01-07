@@ -2,5 +2,5 @@ version: '3.4'
 
 services:
   web:
-    volumes:
-
+    ports:
+      - ${PORT}:8000

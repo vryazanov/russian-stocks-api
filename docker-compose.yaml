@@ -6,14 +6,8 @@ services:
     env_file: .env
     depends_on:
       - db
-    ports:
-      - 8000:8000
-    volumes:
-      - .:/app
   db:
     image: 'postgres:11'
-    ports:
-      - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
