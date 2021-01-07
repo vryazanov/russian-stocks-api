@@ -9,11 +9,7 @@ from stocks.repositories.uow import UoW
 router = fastapi.APIRouter()
 
 
-@router.post(
-    '',
-    response_model=Token,
-    operation_id='post_token',
-)
+@router.post('', response_model=Token)
 async def create_token(
     uow: UoW = fastapi.Depends(dependendies.get_uow),
 ) -> Token:

@@ -1,9 +1,13 @@
 """Router to work with portfolio."""
+import collections
+import typing
+
 import fastapi
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from stocks import dependendies, responses
-from stocks.entities import (PfOperation, PfOperationBase, PfOperationCreate,
+from stocks.entities import (PfAction, PfOperation, PfOperationBase,
+                             PfOperationCreate, PfPosition, PfSummary,
                              TokenCode,)
 from stocks.repositories.uow import UoW
 
@@ -27,11 +31,7 @@ def get_portfolio_token(
     return creds.credentials
 
 
-@router.post(
-    '/operations',
-    response_model=responses.Ok,
-    operation_id='perform_operation',
-)
+@router.post('/operations', response_model=responses.Ok)
 async def create_operation(
     operation: PfOperationBase,
     token: TokenCode = fastapi.Depends(get_portfolio_token),
@@ -47,11 +47,7 @@ async def create_operation(
     return responses.Ok()
 
 
-@router.get(
-    '/operations',
-    response_model=responses.ListResponse[PfOperation],
-    operation_id='list_operations',
-)
+@router.get('/operations', response_model=responses.ListResponse[PfOperation])
 async def operations(
     token: TokenCode = fastapi.Depends(get_portfolio_token),
     uow: UoW = fastapi.Depends(dependendies.get_uow),
@@ -61,3 +57,29 @@ async def operations(
         results = uow.pf_operations.iterator({'token': token})
 
     return responses.ListResponse(results=results)
+
+
+@router.get('/summary', response_model=PfSummary)
+async def summary(
+    token: TokenCode = fastapi.Depends(get_portfolio_token),
+    uow: UoW = fastapi.Depends(dependendies.get_uow),
+) -> PfSummary:
+    """Return the list of operations."""
+    with uow:
+        operations = uow.pf_operations.iterator({'token': token})
+
+    counter: typing.Counter[str] = collections.Counter()
+
+    for operation in operations:
+        if operation.action == PfAction.buy:
+            counter[operation.ticker] += operation.quantity
+
+        if operation.action == PfAction.sell:
+            counter[operation.ticker] -= operation.quantity
+
+    return PfSummary(
+        positions=[
+            PfPosition(ticker=ticker, quantity=quantity)
+            for ticker, quantity in counter.items()
+        ],
+    )

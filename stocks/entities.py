@@ -130,3 +130,26 @@ class PfOperation(PfOperationBase):
 
     id: uuid.UUID
     performed_at: datetime.datetime
+
+
+class PfPosition(pydantic.BaseModel):
+    """Portfolio position."""
+
+    ticker: TickerCode
+    quantity: int
+
+    class Config:
+        """Model config."""
+
+        orm_mode = True
+
+
+class PfSummary(pydantic.BaseModel):
+    """Portfolio summary."""
+
+    positions: typing.List[PfPosition]
+
+    class Config:
+        """Model config."""
+
+        orm_mode = True

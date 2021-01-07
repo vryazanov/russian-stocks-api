@@ -35,7 +35,6 @@ def within_uow(
 @router.post(
     '/tickers/',
     response_model=responses.Ok,
-    operation_id='import_tickers',
     summary='Import tickers.',
     dependencies=[fastapi.Depends(check_import_token)],
 )
@@ -51,7 +50,6 @@ async def tickers(
 @router.post(
     '/payments/',
     response_model=responses.Ok,
-    operation_id='import_payments',
     summary='Import dividend payments.',
     dependencies=[fastapi.Depends(check_import_token)],
 )
@@ -67,7 +65,6 @@ async def payments(
 @router.post(
     '/quotes/',
     response_model=responses.Ok,
-    operation_id='import_quotes',
     summary='Import stock quotes.',
     dependencies=[fastapi.Depends(check_import_token)],
 )

@@ -12,11 +12,7 @@ from stocks.responses import ListResponse
 router = fastapi.APIRouter()
 
 
-@router.get(
-    '',
-    response_model=ListResponse[Ticker],
-    operation_id='get_tickers',
-)
+@router.get('', response_model=ListResponse[Ticker])
 async def tickers(
     uow: UoW = fastapi.Depends(dependendies.get_uow),
 ) -> ListResponse[Ticker]:
@@ -26,11 +22,7 @@ async def tickers(
     return ListResponse(results=results)
 
 
-@router.get(
-    '/{ticker}/payments',
-    response_model=ListResponse[Payment],
-    operation_id='get_payments',
-)
+@router.get('/{ticker}/payments', response_model=ListResponse[Payment])
 async def payments(
     ticker: str,
     uow: UoW = fastapi.Depends(dependendies.get_uow),
@@ -41,11 +33,7 @@ async def payments(
     return ListResponse(results=results)
 
 
-@router.get(
-    '/{ticker}/quotes/{date}',
-    response_model=ListResponse[Quote],
-    operation_id='get_quotes',
-)
+@router.get('/{ticker}/quotes/{date}', response_model=ListResponse[Quote])
 async def quotes(
     ticker: str, date: datetime.date,
     uow: UoW = fastapi.Depends(dependendies.get_uow),
