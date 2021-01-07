@@ -1,5 +1,11 @@
 FROM python:3.8.2-slim as base
 
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    libmagic-dev \
+    netcat \
+    gcc
+
 RUN pip install --upgrade pip
 RUN pip install poetry
 

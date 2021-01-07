@@ -3,17 +3,22 @@ version: '3.4'
 services:
   web:
     build: .
-    environment:
-      PORT: 8000
-      MONGODB_URI: mongodb://root:password@mongo:27017/
+    env_file: .env
     depends_on:
-      - mongo
+      - db
     ports:
       - 8000:8000
     volumes:
       - .:/app
-  mongo:
-    image: mongo:4
+  db:
+    image: 'postgres:11'
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: password
+      POSTGRES_DATABASE: api
+      POSTGRES_USER: api
+      POSTGRES_PASSWORD: api
+volumes:
+  pgdata: null

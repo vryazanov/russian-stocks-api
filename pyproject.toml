@@ -12,6 +12,9 @@ bravado = "^10.6.2"
 pydantic = "^1.6.1"
 fastapi = "^0.61.1"
 uvicorn = "^0.12.2"
+SQLAlchemy = "^1.3.22"
+alembic = "^1.4.3"
+psycopg2 = "^2.8.6"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.4.2"

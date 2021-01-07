@@ -1,10 +1,12 @@
 """Routes for tickers api."""
 import fastapi
-import pymongo
+import sqlalchemy
+import sqlalchemy.orm
 
+from stocks import dependendies
 from stocks.entities import Payment, Ticker
-from stocks.mongo import get_mongo
 from stocks.responses import ListResponse
+from stocks.repositories.abc import BaseUnitOfWork
 
 
 router = fastapi.APIRouter()
@@ -16,11 +18,10 @@ router = fastapi.APIRouter()
     operation_id='get_tickers',
 )
 async def tickers(
-    mongo: pymongo.MongoClient = fastapi.Depends(get_mongo),
+    uow: BaseUnitOfWork = fastapi.Depends(dependendies.get_uow),
 ):
     """Return the list of available tickers."""
-    query = mongo.db.tickers.find({})
-    return ListResponse(results=list(query))
+    return ListResponse(results=[])
 
 
 @router.get(
@@ -29,8 +30,8 @@ async def tickers(
     operation_id='get_payments',
 )
 async def payments(
-    ticker: str, mongo: pymongo.MongoClient = fastapi.Depends(get_mongo),
+    ticker: str,
+    uow: BaseUnitOfWork = fastapi.Depends(dependendies.get_uow),
 ):
     """Return the list of available tickers."""
-    query = mongo.db.payments.find({'ticker': {'$eq': ticker}})
-    return ListResponse(results=list(query))
+    return ListResponse(results=[])
