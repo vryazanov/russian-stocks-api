@@ -6,7 +6,7 @@ import fastapi.security
 
 from stocks import dependendies, responses, settings
 from stocks.entities import PaymentCreate, QuoteCreate, Ticker
-from stocks.repositories.uow import UoW
+from stocks.repositories import UoW
 
 
 router = fastapi.APIRouter()

@@ -5,7 +5,7 @@ import fastapi
 
 from stocks import dependendies
 from stocks.entities import Payment, Quote, Ticker
-from stocks.repositories.uow import UoW
+from stocks.repositories import UoW
 from stocks.responses import ListResponse
 
 

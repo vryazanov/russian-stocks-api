@@ -8,8 +8,8 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from stocks import dependendies, responses
 from stocks.entities import (PfAction, PfOperation, PfOperationBase,
                              PfOperationCreate, PfPosition, PfSummary,
-                             TokenCode,)
-from stocks.repositories.uow import UoW
+                             TokenCode)
+from stocks.repositories import UoW
 
 
 router = fastapi.APIRouter()

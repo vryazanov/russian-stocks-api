@@ -3,7 +3,7 @@ import fastapi
 import sqlalchemy
 import sqlalchemy.orm
 
-from stocks.repositories.uow import UoW
+from stocks.repositories import UoW
 from stocks.settings import Settings
 
 

@@ -3,7 +3,7 @@ import fastapi
 
 from stocks import dependendies
 from stocks.entities import Token
-from stocks.repositories.uow import UoW
+from stocks.repositories import UoW
 
 
 router = fastapi.APIRouter()

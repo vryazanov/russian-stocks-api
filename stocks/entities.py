@@ -25,6 +25,7 @@ class Ticker(pydantic.BaseModel):
 
     name: str
     code: TickerCode
+    lot: typing.Optional[int]
 
     class Config:
         """Model config."""
