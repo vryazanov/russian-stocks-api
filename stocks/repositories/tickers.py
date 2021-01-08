@@ -37,6 +37,7 @@ class Tickers(
             db.TickerModel(
                 name=entity.name,
                 code=entity.code,
+                lot=entity.lot,
             ),
         )
 
