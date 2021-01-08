@@ -25,7 +25,7 @@ class TickerModel(Base):
 
     name = sa.Column(sa.Text, nullable=False)
     code = sa.Column(sa.Text, primary_key=True, unique=True, nullable=False)
-    log = sa.Column(sa.Integer)
+    lot = sa.Column(sa.Integer)
 
 
 class PaymentModel(Base):
